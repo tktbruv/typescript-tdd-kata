@@ -1,11 +1,12 @@
 # typescript-tdd-kata
 
-This repo's purpose is to easily setup for doing Test Driven Development (TDD) Katas in Typescript with Jest as your testrunner.
+Ce dépôt est une base pour faire des kata TDD (Test Driven Development) en TypeScript avec Jest comme moteur de test. 
 
-`./src/helloworld.ts` and `./src/hello.ts` are examples of simple typescript apps.
+`./src/helloworld.ts` et `./src/hello.ts` sont des exemples d'applications en TypeScript.
 
-`./src/__tests__/helloworld.test.ts` and `./src/__tests__/hello.test.ts` are examples of simple tests.
+`./src/__tests__/helloworld.test.ts` et `./src/__tests__/hello.test.ts` sont des exemples de tests simples.
 
-After cloning the repo, run `npm install` to install dependencies.
+Après avoir fait un clone de ce dépôt:
 
-Use `npm test` to start Jest in watch mode
+- `npm install` pour installer les dépendances.
+- `npm test` pour lancer Jest en mode d'exécution automatique de test (lors d'une modification de fichiers).
