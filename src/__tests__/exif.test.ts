@@ -1,0 +1,1 @@
+// https://github.com/bpatrik/ts-exif-parser
