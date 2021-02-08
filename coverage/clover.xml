@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1612742523217" clover="3.2.0">
+  <project timestamp="1612742523217" name="All files">
+    <metrics statements="23" coveredstatements="23" conditionals="2" coveredconditionals="2" methods="11" coveredmethods="11" elements="36" coveredelements="36" complexity="0" loc="23" ncloc="23" packages="1" files="4" classes="4"/>
+    <file name="PhraseStub.ts" path="/Users/rossypro/sources/ets/log210/typescript-tdd-kata/src/PhraseStub.ts">
+      <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="5" count="1" type="cond" truecount="2" falsecount="0"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="11" count="1" type="stmt"/>
+    </file>
+    <file name="hello.ts" path="/Users/rossypro/sources/ets/log210/typescript-tdd-kata/src/hello.ts">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+    </file>
+    <file name="helloworld.ts" path="/Users/rossypro/sources/ets/log210/typescript-tdd-kata/src/helloworld.ts">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+    </file>
+    <file name="phrase.ts" path="/Users/rossypro/sources/ets/log210/typescript-tdd-kata/src/phrase.ts">
+      <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="9" count="3" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="13" count="2" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="18" count="1" type="stmt"/>
+      <line num="20" count="9" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="24" count="3" type="stmt"/>
+      <line num="29" count="3" type="stmt"/>
+      <line num="32" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
