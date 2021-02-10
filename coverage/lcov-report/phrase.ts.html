@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">46.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>7/15</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">16.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>1/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">46.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>6/13</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -96,27 +96,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
@@ -126,28 +126,28 @@ export class Phrase {
 &nbsp;
   private phrase: string;
 &nbsp;
-  constructor(phrase: string) {
-    this.phrase = phrase;
+<span class="fstat-no" title="function not covered" >  constructor(p</span>hrase: string) {
+<span class="cstat-no" title="statement not covered" >    this.phrase = phrase;</span>
   }
    
-  unique(): string[] {
-    return this._unique(this.phrase);
+<span class="fstat-no" title="function not covered" >  unique(</span>): string[] {
+<span class="cstat-no" title="statement not covered" >    return this._unique(this.phrase);</span>
   }
 &nbsp;
-  intersect(str2: string): String[] {
-    let array1: string[] = this.unique();
-    let array2: string[] = this._unique(str2);
+<span class="fstat-no" title="function not covered" >  intersect(</span>str2: string): String[] {
+    let array1: string[] = <span class="cstat-no" title="statement not covered" >this.unique();</span>
+    let array2: string[] = <span class="cstat-no" title="statement not covered" >this._unique(str2);</span>
 &nbsp;
-    return array1.filter((value) =&gt; array2.includes(value));
+<span class="cstat-no" title="statement not covered" >    return array1.filter(<span class="fstat-no" title="function not covered" >(v</span>alue) =&gt; <span class="cstat-no" title="statement not covered" >array2.includes(value));</span></span>
   }
 &nbsp;
-  private _unique(phrase: string): string[] {
-    let words: string[] = phrase
+<span class="fstat-no" title="function not covered" >  private _</span>unique(phrase: string): string[] {
+    let words: string[] = <span class="cstat-no" title="statement not covered" >phrase</span>
       .replace(/[\.]|’s|,/gm, '')
       .replace(/\//gm, ' ')
       .split(' ');
 &nbsp;
-    return SortedSet(words).toArray();
+<span class="cstat-no" title="statement not covered" >    return SortedSet(words).toArray();</span>
   }
 &nbsp;
 }</pre></td></tr></table></pre>
@@ -157,7 +157,7 @@ export class Phrase {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Feb 07 2021 19:02:03 GMT-0500 (GMT-05:00)
+                at Mon Feb 08 2021 15:08:50 GMT-0500 (GMT-05:00)
             </div>
         </div>
         <script src="prettify.js"></script>
