@@ -4,8 +4,8 @@
   "description": "a quick repo for initializing an environment to practice TDD w/ Typescript",
   "main": "build/index.js",
   "scripts": {
-    "test": "jest --coverage --watchAll --env=jsdom",
-    "coverage": "jest --coverage"
+    "test": "jest  --watchAll --env=jsdom",
+    "coverage": "jest --coverage --watchAll --env=jsdom"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,9 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "bigdatacloud-reverse-geocoding": "^0.2.0",
+    "image-thumbnail": "^1.0.13",
+    "search-google-geocode": "0.0.13",
     "sortedset": "0.0.2",
     "ts-exif-parser": "^0.2.1"
   }
