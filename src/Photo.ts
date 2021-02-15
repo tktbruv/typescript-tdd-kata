@@ -9,12 +9,17 @@
 // - pays/province/ville/rue => symlink
 // - conserver structure des répertoire d'origine avec de symlink
 // var geocoder = require('search-google-geocode');
+
+
+// 'use strict'
+const filelink = require('filelink')
 import ReverseGeocode, { ILocation, IGeocode } from "bigdatacloud-reverse-geocoding";
 
 var path = require('path');
 import {ExifParserFactory} from "ts-exif-parser";
 var fs = require('fs');
 const imageThumbnail = require('image-thumbnail');
+var mime = require('mime-types')
 
 export class Photo {
 
@@ -26,8 +31,8 @@ export class Photo {
   private hour: string|undefined
   private minute: string|undefined
   private second: string|undefined
-  private longitude: number=0.0;
-  private latitude: number=0.0;
+  private longitude: number|undefined=undefined;
+  private latitude: number|undefined=undefined;
 
   constructor(root_path: string,file_path:string) {
     this.root_path = root_path;
@@ -38,66 +43,90 @@ export class Photo {
     return this.getCreationDate()+"-"+this.getFilename();
   }
 
-  async archive(archive_path:string, thumbnail_path:string|undefined): Promise<string>{
+  async archive(archive_path:string, thumbnail_path:string|undefined, photo_path:string|undefined): Promise<any>{
+    let symlink_geocoding_filename:string = "";
+      let symlink_photo_filename:string = "";
+
     this.extract_exif_data();
-    let new_archive_filename = this.archive_photo(archive_path);
-    let new_filename = path.join(await new_archive_filename,this.getNewName());
-    let new_thumbnail_path = this.generateThumbnail(new_filename);
-    await this.reverseGeolocation()
-    return new_filename;
+    let archive_filename = this.archive_photo(archive_path);
+    let thumbnail_filename =  await this.generateThumbnail(archive_filename);
+
+    if(photo_path){
+      symlink_geocoding_filename = await this.generateGeocodedFileLink(photo_path,thumbnail_filename)
+      symlink_photo_filename = path.join(photo_path,path.dirname(this.file_path),this.getNewName());
+      await this.createSymlink(thumbnail_filename,symlink_photo_filename);
+    }
+    return {archive_filename,thumbnail_filename,symlink_geocoding_filename,symlink_photo_filename};
   } 
 
-  private async reverseGeolocation(){
-    if(this.longitude){
-      // var options = { language: 'fr'};
-      // await geocoder.reverseGeocode(this.latitude, this.longitude, this.reverse_geocodeing_callback, options);
-      const geocode = new ReverseGeocode();
-      const location: ILocation = { lat: this.latitude, long: this.longitude};
-      const place: IGeocode = await geocode.locate(location);
-      console.log(place)
-      console.log("------------");
-      console.log(place.countryName);
-      console.log(place.principalSubdivision);
-      console.log(place.locality);
-      console.log(place.localityInfo.administrative);
-      console.log("---------iii----------");
-      console.log(place.localityInfo.informative);
 
-
+  private async generateGeocodedFileLink(photo_path:string|undefined, filename:string): Promise<string> {
+    let symlink_thumbnail_filename:string = "";
+    if(photo_path){
+      let geoPath = await this.reverseGeolocationPath();
+      if(geoPath){
+        symlink_thumbnail_filename = path.join(photo_path,geoPath,this.getNewName());
+        await this.createSymlink(filename,symlink_thumbnail_filename!);
+      }
     }
-
+    return symlink_thumbnail_filename;
   }
-  // use callback to return result from geocoding process
-  // private reverse_geocodeing_callback (error:any, result:any) {
-  //   if (error) console.log(error); // on error
-  //   else console.log(result); // on success
-  // }
 
-  private extract_exif_data(){
-    // console.log("in extract_exif_data")
+  private async reverseGeolocationPath(): Promise<string|undefined> {
+    let geoPath:string = ""; 
+    if(this.longitude){
+      const geocode = new ReverseGeocode();
+      const location: ILocation = { lat: this.latitude!, long: this.longitude!};
+      const place: IGeocode = await geocode.locate(location);
+    
+      let index:any;
+      for (index in place.localityInfo.administrative) {
+          geoPath = path.join(geoPath,place.localityInfo.administrative![index].name);
+      }
+    }
+    if(geoPath.length == 0){
+      return undefined
+    } else {
+      return geoPath;
+    }
+  }
+ 
+  private async createSymlink(source:string,destination:string){
+    // console.log(source);
+    // console.log(destination);
+   
+    await filelink(source, destination, {
+      force: true,
+      mkdirp: true
+    });
+  }
+
+  public getExifTags(){
     const buf = fs.readFileSync(this.getSourcePath());
     const parser = ExifParserFactory.create(buf).parse();
+    return  parser.tags;
+  }
+  private async extract_exif_data(){
+    let nbMillisecond:number = 0;
+    let tags = this.getExifTags();      
 
-    let tags = parser.tags;
-      
-    if(tags != undefined){
-     
-      let nbMillisecond:number = tags.DateTimeOriginal!;
-      let date = new Date(nbMillisecond*1000);
-       this.month = date.toLocaleString("en-US", {month: "2-digit"}) // December
-       this.day = date.toLocaleString("en-US", {day: "numeric"}) // 9
-       this.year = date.toLocaleString("en-US", {year: "numeric"}) // 2019
-       this.hour = date.toLocaleString("en-US", {hour: "numeric",hour12: false,timeZone: 'UTC'}) // 10 AM
-       this.minute = date.toLocaleString("en-US", {minute: "numeric"}) // 30
-      this.second = date.toLocaleString("en-US", {second: "numeric"}) // 15
-
-
-      this.longitude = tags.GPSLongitude || 0.0;
-      this.latitude = tags.GPSLatitude || 0.0;
-
+    if(tags != undefined &&  Object.keys(tags!).length > 0){
+      nbMillisecond = tags!.DateTimeOriginal! * 1000;
+      this.longitude = tags!.GPSLongitude || 0.0;
+      this.latitude = tags!.GPSLatitude || 0.0;
     } else {
-      console.log("TAG undefined");
+      const{birthtime} = fs.statSync(this.getSourcePath());
+      nbMillisecond = birthtime.getTime();
     }
+   
+    let date = new Date(nbMillisecond);
+    this.month = date.toLocaleString("en-US", {month: "2-digit"}) // 12
+    this.day = date.toLocaleString("en-US", {day: "2-digit"}) // 09
+    this.year = date.toLocaleString("en-US", {year: "numeric"}) // 2019
+    let hms:string = date.toLocaleString("en-US", {hour: "2-digit",minute: "2-digit",hour12: false, second: "2-digit",timeZone: 'UTC'}) // 10 AM
+    this.hour = hms.substr(0,2);
+    this.minute = hms.substr(3,2);
+    this.second = hms.substr(6,2);
   }
 
   private getSourcePath(): string{
@@ -114,48 +143,49 @@ export class Photo {
     return path.basename(this.getSourcePath()); 
   }
   
-  private getDirectoryName(): string{
+  // year/mon/day
+  private getYearMonthDayPath(): string{
     return path.join(this.year,this.month,this.day);
   }
- 
 
-  private confirm_thumbnail_write(err:any){
-    if (err) throw err;
-    // console.log('Done writing image to file');
-  }
+  private async generateThumbnail(new_archive_filename:string) : Promise<string>  {
+    let thumbnal_filename = "";
 
-  private  generateThumbnail(new_archive_filename:string) : string  {
-    let new_thumbnail_path = "";
-    try {
-        const thumbnail =  imageThumbnail(new_archive_filename);
+    // try {
+      // console.log("Thumbnail generating");
+      const stream = fs.createReadStream(new_archive_filename)
+      const thumbnail = await imageThumbnail(stream);
 
-        let base = path.dirname(this.file_path);
-        // console.log(base);
+        thumbnal_filename = path.join(
+          path.dirname(this.root_path),
+          'thumbnail',
+          this.getYearMonthDayPath(),
+          this.getNewName());
+          // console.log(thumbnal_filename);
 
-        let thumbnal_filename:string = path.join(path.dirname(this.root_path),'thumbnail',base,this.getNewName());
         if (!fs.existsSync(path.dirname(thumbnal_filename))) 
           fs.mkdirSync(path.dirname(thumbnal_filename), { recursive: true }); 
 
-        // console.log(thumbnal_filename);
-        fs.writeFile(thumbnal_filename, thumbnail,this.confirm_thumbnail_write);
-    } catch (err) {
-      console.error(err);
-    }
+        fs.writeFileSync(thumbnal_filename, thumbnail);
 
-    return new_thumbnail_path;
+
+    // } catch (err) {
+      // console.error(err);
+    // }
+
+    return thumbnal_filename;
   }
 
-  private confirCopyFile(err:any) {
-    if ( err) throw err;
-  }
+  private  archive_photo(archive_path:string): string {
 
-  private  archive_photo(archive_path:string){
-    let new_path = path.join(archive_path,this.getDirectoryName());
+    let new_path = path.join(archive_path,this.getYearMonthDayPath());
     if (!fs.existsSync(new_path)) 
       fs.mkdirSync(new_path, { recursive: true }); 
 
-    fs.copyFile(this.getSourcePath(),path.join(new_path,this.getNewName()), this.confirCopyFile);
-    return new_path;
+    let archive_filenamne = path.join(new_path,this.getNewName());
+    fs.copyFileSync(this.getSourcePath(),archive_filenamne);
+    
+    return archive_filenamne;
   }
 
 }
