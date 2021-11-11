@@ -63,11 +63,16 @@ export class Photo {
   private async generateGeocodedFileLink(photo_path:string|undefined, filename:string): Promise<string> {
     let symlink_thumbnail_filename:string = "";
     if(photo_path){
-      let geoPath = await this.reverseGeolocationPath();
-      if(geoPath){
-        symlink_thumbnail_filename = path.join(photo_path,geoPath,this.getNewName());
-        await this.createSymlink(filename,symlink_thumbnail_filename!);
-      }
+      symlink_thumbnail_filename = await this.createSimlink(symlink_thumbnail_filename, photo_path, filename);
+    }
+    return symlink_thumbnail_filename;
+  }
+
+  private async createSimlink(symlink_thumbnail_filename: string, photo_path: string, filename: string) {
+    let geoPath = await this.reverseGeolocationPath();
+    if (geoPath) {
+      symlink_thumbnail_filename = path.join(photo_path, geoPath, this.getNewName());
+      await this.createSymlink(filename, symlink_thumbnail_filename!);
     }
     return symlink_thumbnail_filename;
   }
@@ -119,14 +124,18 @@ export class Photo {
       nbMillisecond = birthtime.getTime();
     }
    
+    this.millisecondToYearMontDayHourMinSec(nbMillisecond);
+  }
+
+  private millisecondToYearMontDayHourMinSec(nbMillisecond: number) {
     let date = new Date(nbMillisecond);
-    this.month = date.toLocaleString("en-US", {month: "2-digit"}) // 12
-    this.day = date.toLocaleString("en-US", {day: "2-digit"}) // 09
-    this.year = date.toLocaleString("en-US", {year: "numeric"}) // 2019
-    let hms:string = date.toLocaleString("en-US", {hour: "2-digit",minute: "2-digit",hour12: false, second: "2-digit",timeZone: 'UTC'}) // 10 AM
-    this.hour = hms.substr(0,2);
-    this.minute = hms.substr(3,2);
-    this.second = hms.substr(6,2);
+    this.month = date.toLocaleString("en-US", { month: "2-digit" }); // 12
+    this.day = date.toLocaleString("en-US", { day: "2-digit" }); // 09
+    this.year = date.toLocaleString("en-US", { year: "numeric" }); // 2019
+    let hms: string = date.toLocaleString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false, second: "2-digit", timeZone: 'UTC' }); // 10 AM
+    this.hour = hms.substr(0, 2);
+    this.minute = hms.substr(3, 2);
+    this.second = hms.substr(6, 2);
   }
 
   private getSourcePath(): string{
@@ -151,8 +160,6 @@ export class Photo {
   private async generateThumbnail(new_archive_filename:string) : Promise<string>  {
     let thumbnal_filename = "";
 
-    // try {
-      // console.log("Thumbnail generating");
       const stream = fs.createReadStream(new_archive_filename)
       const thumbnail = await imageThumbnail(stream);
 
@@ -161,17 +168,13 @@ export class Photo {
           'thumbnail',
           this.getYearMonthDayPath(),
           this.getNewName());
-          // console.log(thumbnal_filename);
 
-        if (!fs.existsSync(path.dirname(thumbnal_filename))) 
-          fs.mkdirSync(path.dirname(thumbnal_filename), { recursive: true }); 
+          // console.log(thumbnal_filename);
+          if (!fs.existsSync(path.dirname(thumbnal_filename))) 
+            fs.mkdirSync(path.dirname(thumbnal_filename), { recursive: true }); 
 
         fs.writeFileSync(thumbnal_filename, thumbnail);
 
-
-    // } catch (err) {
-      // console.error(err);
-    // }
 
     return thumbnal_filename;
   }

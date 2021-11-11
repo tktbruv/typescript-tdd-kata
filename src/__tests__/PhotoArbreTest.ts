@@ -29,6 +29,9 @@ describe('Import arbre test', () => {
         if(fs.existsSync(thumbnail_filename)) fs.unlinkSync(thumbnail_filename);
         if(fs.existsSync(symlink_geocoding_filename)) fs.unlinkSync(symlink_geocoding_filename);
         if(fs.existsSync(symlink_photo_filename)) fs.unlinkSync(symlink_photo_filename);
+        
+        const dir = path.dirname(thumbnail_filename);
+        fs.rmdirSync(dir, { recursive: true, force: true })
 
         root_path = path.join(__dirname, 'data');
         filename= path.join('folder1','folder11','arbre_gps.jpeg');

@@ -30,6 +30,7 @@
     "bigdatacloud-reverse-geocoding": "^0.2.0",
     "filelink": "^4.1.2",
     "image-thumbnail": "^1.0.13",
+    "jest-runner": "^27.3.1",
     "mime-types": "^2.1.28",
     "search-google-geocode": "0.0.13",
     "sortedset": "0.0.2",
